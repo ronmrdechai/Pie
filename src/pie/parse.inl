@@ -4,7 +4,9 @@
 
 namespace pie {
 
+namespace detail {
 namespace traits {
+
 template <typename T>
 struct is_pair : std::false_type { };
 
@@ -58,8 +60,6 @@ constexpr bool is_tuple_v = is_tuple<T>::value;
 
 } // namespace traits
 
-namespace detail {
-
 template <typename> struct parse_object_format { };
 
 template <>
@@ -93,29 +93,29 @@ template <>
 struct parse_object_format<double> { static constexpr char value = 'd'; };
 
 template <>
-struct parse_object_format<char*> { static constexpr char value = 's'; };
+struct parse_object_format<char*> { static constexpr char value = 'y'; };
 
 template <>
-struct parse_object_format<const char*> { static constexpr char value = 's'; };
+struct parse_object_format<const char*> { static constexpr char value = 'y'; };
 
 template <size_t I, typename Tuple>
 struct set_tuple_helper {
-    static void set(PyObject* o, Tuple t) {
+    static void help(PyObject* o, Tuple t) {
         PyTuple_SetItem(o, I, parse_object(std::get<I>(t)));
-        set_tuple_helper<I - 1, Tuple>::set(o, t);
+        set_tuple_helper<I - 1, Tuple>::help(o, t);
     }
 };
 
 template <typename Tuple>
 struct set_tuple_helper<0, Tuple> {
-    static void set(PyObject* o, Tuple t) {
+    static void help(PyObject* o, Tuple t) {
         PyTuple_SetItem(o, 0, parse_object(std::get<0>(t)));
     }
 };
 
 template <typename T, typename = void>
 struct parse_object_helper {
-    static PyObject* parse(T&& t) {
+    static PyObject* help(T&& t) {
         char format[2] = {0};
         format[0] = parse_object_format<std::decay_t<T>>::value;
         return Py_BuildValue(format, t);
@@ -123,18 +123,20 @@ struct parse_object_helper {
 };
 
 template <typename Tuple>
-struct parse_object_helper<Tuple, std::enable_if_t<traits::is_tuple_v<std::decay_t<Tuple>>>> {
-    static PyObject* parse(Tuple&& t) {
-        constexpr size_t n = std::tuple_size<Tuple>::value;
+struct parse_object_helper<Tuple,
+        std::enable_if_t<traits::is_tuple_v<std::decay_t<Tuple>>>> {
+    static PyObject* help(Tuple&& t) {
+        constexpr size_t n = std::tuple_size<std::decay_t<Tuple>>::value;
         PyObject* o = PyTuple_New(n);
-        set_tuple_helper<n - 1, Tuple>::set(o, t);
+        set_tuple_helper<n - 1, Tuple>::help(o, t);
         return o;
     }
 };
 
 template <typename String>
-struct parse_object_helper<String, std::enable_if_t<traits::is_string_v<std::decay_t<String>>>> {
-    static PyObject* parse(String&& s) {
+struct parse_object_helper<String,
+        std::enable_if_t<traits::is_string_v<std::decay_t<String>>>> {
+    static PyObject* help(String&& s) {
         char format[2] = {0};
         format[0] = parse_object_format<const char*>::value;
         return Py_BuildValue(format, s.c_str());
@@ -142,8 +144,9 @@ struct parse_object_helper<String, std::enable_if_t<traits::is_string_v<std::dec
 };
 
 template <typename Container>
-struct parse_object_helper<Container, std::enable_if_t<traits::is_mapping_v<Container>>> {
-    static PyObject* parse(Container c) {
+struct parse_object_helper<Container,
+        std::enable_if_t<traits::is_mapping_v<std::decay_t<Container>>>> {
+    static PyObject* help(Container c) {
         PyObject* o = PyDict_New();
         for (auto& e: c) {
             PyObject* key = parse_object(e.first);
@@ -157,8 +160,10 @@ struct parse_object_helper<Container, std::enable_if_t<traits::is_mapping_v<Cont
 };
 
 template <typename Container>
-struct parse_object_helper<Container, std::enable_if_t<traits::is_sequence_v<Container>>> {
-    static PyObject* parse(Container c) {
+struct parse_object_helper<Container,
+        std::enable_if_t<traits::is_sequence_v<std::decay_t<Container>> &&
+                        !traits::is_string_v  <std::decay_t<Container>>>> {
+    static PyObject* help(Container c) {
         PyObject* o = PyList_New(0);
         for (auto& e: c) {
             PyList_Append(o, parse_object(e));
@@ -167,11 +172,37 @@ struct parse_object_helper<Container, std::enable_if_t<traits::is_sequence_v<Con
     }
 };
 
+template <typename T, typename... Ts>
+struct parse_object_helper_multi {
+    static void help(PyObject* o, T&& t, Ts&&... ts) {
+        PyList_Append(o, parse_object(t));
+        parse_object_helper_multi<Ts...>::help(std::forward<PyObject*>(o),
+                                               std::forward<Ts>(ts)...);
+    }
+};
+
+template <typename T>
+struct parse_object_helper_multi<T> {
+    static void help(PyObject* o, T&& t) {
+        PyList_Append(o, parse_object(std::forward<T>(t)));
+    }
+};
+
 } // namespace detail
 
 template <typename T>
 PyObject* parse_object(T&& t) {
-    return detail::parse_object_helper<T>::parse(std::forward<T>(t));
+    return detail::parse_object_helper<T>::help(std::forward<T>(t));
+}
+
+template <typename T, typename... Ts>
+PyObject* parse_object(T&& t, Ts&&... ts) {
+    PyObject* o = PyList_New(0);
+    detail::parse_object_helper_multi<T, Ts...>::help(
+            o,
+            std::forward<T>(t),
+            std::forward<Ts>(ts)...);
+    return o;
 }
 
 } // namespace pie
