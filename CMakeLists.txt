@@ -13,6 +13,11 @@ set(PIE_TEST_DIR "test")
 set(PIE_SOURCE_DIR "src")
 set(PIE_EXTERNAL_DIR "ext")
 
+if(NOT EXISTS "${PROJECT_SOURCE_DIR}/${PIE_EXTERNAL_DIR}")
+    message(FATAL_ERROR "${PROJECT_SOURCE_DIR}/${PIE_EXTERNAL_DIR} directory \
+missing, this directory should contain the newest `catch.hpp' file")
+endif()
+
 set(PIE_HEADER_FILES
     "${PIE_SOURCE_DIR}/pie/parse.inl"
     "${PIE_SOURCE_DIR}/pie/parse.h"
