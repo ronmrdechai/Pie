@@ -1,5 +1,4 @@
 #include <tuple>
-#include <iterator>
 #include <type_traits>
 
 namespace pie {
@@ -21,8 +20,7 @@ struct is_mapping : std::false_type { };
 
 template <typename Container>
 struct is_mapping<Container, std::enable_if_t<
-    is_pair_v<typename std::iterator_traits<
-                typename Container::iterator>::value_type>>> : 
+    is_pair_v<typename Container::value_type>>> : 
         std::true_type { };
 
 template <typename T>
@@ -33,8 +31,7 @@ struct is_sequence : std::false_type { };
 
 template <typename Container>
 struct is_sequence<Container, std::enable_if_t<
-    !is_pair_v<typename std::iterator_traits<
-                typename Container::iterator>::value_type>>> : 
+    !is_pair_v<typename Container::value_type>>> : 
         std::true_type { };
 
 template <typename T>
