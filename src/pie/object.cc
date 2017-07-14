@@ -44,6 +44,10 @@ object object::str() const {
     return PyObject_Str(m_obj);
 }
 
+object object::bytes() const {
+    return PyObject_Bytes(m_obj);
+}
+
 object object::operator< (const object& other) const {
     return PyObject_RichCompare(m_obj, other.m_obj, Py_LT);
 }
@@ -88,6 +92,108 @@ object::proxy object::operator[](const object& item) {
     return proxy(*this, item);
 }
 
+object object::operator+ (const object& other) const {
+    return PyNumber_Add(m_obj, other.m_obj);
+}
+
+object& object::operator+=(const object& other) {
+    object o = PyNumber_InPlaceAdd(m_obj, other.m_obj);
+    return *this;
+}
+
+object object::operator- (const object& other) const {
+    return PyNumber_Subtract(m_obj, other.m_obj);
+}
+
+object& object::operator-=(const object& other) {
+    object o = PyNumber_InPlaceSubtract(m_obj, other.m_obj);
+    return *this;
+}
+
+object object::operator* (const object& other) const {
+    return PyNumber_Multiply(m_obj, other.m_obj);
+}
+
+object& object::operator*=(const object& other) {
+    object o = PyNumber_InPlaceMultiply(m_obj, other.m_obj);
+    return *this;
+}
+
+object object::operator/ (const object& other) const {
+    return PyNumber_TrueDivide(m_obj, other.m_obj);
+}
+
+object& object::operator/=(const object& other) {
+    object o = PyNumber_InPlaceTrueDivide(m_obj, other.m_obj);
+    return *this;
+}
+
+object object::operator% (const object& other) const {
+    return PyNumber_Remainder(m_obj, other.m_obj);
+}
+
+object& object::operator%=(const object& other) {
+    object o = PyNumber_InPlaceRemainder(m_obj, other.m_obj);
+    return *this;
+}
+
+object object::operator<< (const object& other) const {
+    return PyNumber_Lshift(m_obj, other.m_obj);
+}
+
+object& object::operator<<=(const object& other) {
+    object o = PyNumber_InPlaceLshift(m_obj, other.m_obj);
+    return *this;
+}
+
+object object::operator>> (const object& other) const {
+    return PyNumber_Rshift(m_obj, other.m_obj);
+}
+
+object& object::operator>>=(const object& other) {
+    object o = PyNumber_InPlaceRshift(m_obj, other.m_obj);
+    return *this;
+}
+
+object object::operator& (const object& other) const {
+    return PyNumber_And(m_obj, other.m_obj);
+}
+
+object& object::operator&=(const object& other) {
+    object o = PyNumber_InPlaceAnd(m_obj, other.m_obj);
+    return *this;
+}
+
+object object::operator^ (const object& other) const {
+    return PyNumber_Xor(m_obj, other.m_obj);
+}
+
+object& object::operator^=(const object& other) {
+    object o = PyNumber_InPlaceXor(m_obj, other.m_obj);
+    return *this;
+}
+
+object object::operator| (const object& other) const {
+    return PyNumber_Or(m_obj, other.m_obj);
+}
+
+object& object::operator|=(const object& other) {
+    object o = PyNumber_InPlaceOr(m_obj, other.m_obj);
+    return *this;
+}
+
+object object::operator-() const {
+    return PyNumber_Negative(m_obj);
+}
+
+object object::operator+() const {
+    return PyNumber_Positive(m_obj);
+}
+
+object object::operator~() const {
+    return PyNumber_Invert(m_obj);
+}
+
 PyObject* object::get() const {
     return m_obj;
 }
@@ -101,6 +207,26 @@ object::proxy::proxy(const object& o, const object& i) : o(o), i(i) { }
 object::proxy& object::proxy::operator=(const object& item) {
     PyObject_SetItem(o.m_obj, i.m_obj, item.m_obj);
     return *this;
+}
+
+object getattr(const object& o, const object& attr) {
+    return PyObject_GetAttr(o.get(), attr.get());
+}
+
+object setattr(object& o, const object& attr, const object& value) {
+    return PyObject_SetAttr(o.get(), attr.get(), value.get());
+}
+
+bool hasattr(const object& o, const object& attr) {
+    return PyObject_HasAttr(o.get(), attr.get());
+}
+
+object pow(const object& b, const object& e, const object& o) {
+    return PyNumber_Power(b.get(), e.get(), o.get());
+}
+
+object abs(const object& o) {
+    return PyNumber_Absolute(o.get());
 }
 
 std::ostream& operator<<(std::ostream& os, const object& o) {

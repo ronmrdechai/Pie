@@ -33,8 +33,9 @@ public:
     // __repr__
     object repr() const;
     // __str__
-    // __bytes__
     object str() const;
+    // __bytes__
+    object bytes() const;
     // __lt__
     object operator< (const object& other) const;
     // __le__
@@ -64,42 +65,54 @@ public:
     proxy operator[](const object& item);
 
     // __add__
-    // __iadd__
     object  operator+ (const object& other) const;
+    // __iadd__
     object& operator+=(const object& other);
     // __sub__
-    // __isub__
     object  operator- (const object& other) const;
+    // __isub__
     object& operator-=(const object& other);
     // __mul__
-    // __imul__
     object  operator* (const object& other) const;
+    // __imul__
     object& operator*=(const object& other);
     // __truediv__
-    // __itruediv__
     object  operator/ (const object& other) const;
+    // __itruediv__
     object& operator/=(const object& other);
     // __mod__
-    // __imod__
     object  operator% (const object& other) const;
+    // __imod__
     object& operator%=(const object& other);
-    // __pow__
-    // __ipow__
+
     // __lshift__
+    object  operator<< (const object& other) const;
     // __ilshift__
+    object& operator<<=(const object& other);
     // __rshift__
+    object  operator>> (const object& other) const;
     // __irshift__
+    object& operator>>=(const object& other);
     // __and__
+    object  operator& (const object& other) const;
     // __iand__
+    object& operator&=(const object& other);
     // __xor__
+    object  operator^ (const object& other) const;
     // __ixor__
+    object& operator^=(const object& other);
     // __or__
+    object  operator| (const object& other) const;
     // __ior__
+    object& operator|=(const object& other);
 
     // __neg__
+    object operator-() const;
     // __pos__
+    object operator+() const;
     // __abs__
     // __invert__
+    object operator~() const;
 
 // Non-Python methods
 
@@ -113,11 +126,20 @@ private:
 };
 
 // __getattr__
+object getattr(const object& o, const object& attr);
 // __setattr__
+object setattr(object& o, const object& attr, const object& value);
 // __hasattr__
+bool hasattr(const object& o, const object& attr);
 
+// print
 std::ostream& operator<<(std::ostream& os, const object& o);
 
+object pow(const object& b, const object& e, const object& o = Py_None);
+
+object abs(const object& o);
+
 } // namespace pie
+
 
 #include "object.inl"
