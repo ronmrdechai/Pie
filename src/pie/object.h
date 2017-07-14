@@ -9,12 +9,14 @@ public:
     object();
     ~object();
 
-    explicit object(PyObject* o);
+    object(PyObject* o);
     template <typename... Args>
-    explicit object(Args&&... args);
+    object(Args&&... args);
 
-    object(const object& other);
+    object(object& other);
     object(object&& other);
+    object(const object& other);
+
     object& operator=(object other);
 
 // Non-Python methods

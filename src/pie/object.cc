@@ -16,12 +16,14 @@ object::object(PyObject* o) : m_obj(o) {
     }
 }
 
-object::object(const object& other) : m_obj(other.m_obj) {
-    Py_INCREF(m_obj);
-}
+object::object(object& other) : object(static_cast<object const&>(other)) { }
 
 object::object(object&& other) : m_obj(other.m_obj) {
     other.m_obj = nullptr;
+}
+
+object::object(const object& other) : m_obj(other.m_obj) {
+    Py_INCREF(m_obj);
 }
 
 object& object::operator=(object other) {
@@ -36,6 +38,5 @@ PyObject* object::get() {
 PyObject* object::operator->() {
     return get();
 }
-
 
 } // namespace pie
