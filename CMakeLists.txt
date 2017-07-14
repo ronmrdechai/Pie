@@ -16,12 +16,12 @@ set(PIE_SOURCE_DIR "src")
 set(PIE_HEADER_FILES
     "${PIE_SOURCE_DIR}/pie/parse.inl"
     "${PIE_SOURCE_DIR}/pie/parse.h"
-    "${PIE_SOURCE_DIR}/pie/python_object.h"
-    "${PIE_SOURCE_DIR}/pie/python_object.inl"
+    "${PIE_SOURCE_DIR}/pie/object.h"
+    "${PIE_SOURCE_DIR}/pie/object.inl"
 )
 
 set(PIE_SOURCE_FILES
-    "${PIE_SOURCE_DIR}/pie/python_object.cc"
+    "${PIE_SOURCE_DIR}/pie/object.cc"
 )
 
 set(PIE_TEST_FILES
