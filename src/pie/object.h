@@ -65,14 +65,24 @@ public:
 
     // __add__
     // __iadd__
+    object  operator+ (const object& other) const;
+    object& operator+=(const object& other);
     // __sub__
     // __isub__
+    object  operator- (const object& other) const;
+    object& operator-=(const object& other);
     // __mul__
     // __imul__
+    object  operator* (const object& other) const;
+    object& operator*=(const object& other);
     // __truediv__
     // __itruediv__
+    object  operator/ (const object& other) const;
+    object& operator/=(const object& other);
     // __mod__
     // __imod__
+    object  operator% (const object& other) const;
+    object& operator%=(const object& other);
     // __pow__
     // __ipow__
     // __lshift__
