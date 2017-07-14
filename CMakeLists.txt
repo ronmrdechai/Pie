@@ -40,5 +40,5 @@ add_executable(tests ${PIE_TEST_FILES})
 
 target_link_libraries(tests pie ${PYTHON_LIBRARY} ${GTEST_BOTH_LIBRARIES})
 
-add_custom_target(run-tests)
-add_custom_command(COMMAND ./tests DEPENDS tests TARGET run-tests)
+add_custom_target(run-tests DEPENDS tests)
+add_custom_command(COMMAND ./tests TARGET run-tests)
