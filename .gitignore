@@ -1,2 +1,4 @@
 build/
-ext/
+.*.swp
+.DS_Store
+
