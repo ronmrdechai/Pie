@@ -58,3 +58,39 @@ TEST(object, move_assignment) {
     EXPECT_EQ(nullptr, o.get());
     EXPECT_EQ(refcount, move->ob_refcnt);
 }
+
+// repr
+// str
+
+TEST(object, comparison) {
+    object one = 1;
+    object two = 2;
+    EXPECT_LT(one, two);
+    EXPECT_LE(one, two);
+    EXPECT_LE(one, one);
+    EXPECT_EQ(one, one);
+    EXPECT_EQ(two, two);
+    EXPECT_NE(one, two);
+    EXPECT_NE(two, one);
+    EXPECT_GT(two, one);
+    EXPECT_GE(two, one);
+    EXPECT_GE(one, one);
+}
+
+TEST(object, hash) {
+    object o1 = 1;
+    object o2 = 1;
+    EXPECT_EQ(o1.hash(), o2.hash());
+}
+
+// call
+
+TEST(object, sequences) {
+    object seq(1, 2, 3, 4, 5);
+    EXPECT_EQ(5, seq.length());
+    for (size_t i = 0; i < 5; ++i) {
+        EXPECT_EQ(object(i + 1), seq[i]);
+        seq[i] = i + 2;
+        EXPECT_EQ(object(i + 2), seq[i]);
+    }
+}
