@@ -145,9 +145,9 @@ struct parse_object_helper<Container,
         std::enable_if_t<traits::is_mapping_v<std::decay_t<Container>>>> {
     static PyObject* help(Container c) {
         PyObject* o = PyDict_New();
-        for (auto& e: c) {
-            PyObject* key = parse_object(e.first);
-            PyObject* value = parse_object(e.second);
+        for (auto& [_key, _value]: c) {
+            PyObject* key = parse_object(_key);
+            PyObject* value = parse_object(_value);
             Py_INCREF(key);
             Py_INCREF(value);
             PyDict_SetItem(o, key, value);
