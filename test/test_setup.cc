@@ -1,13 +1,13 @@
 #include <Python.h>
 
-struct Setup {
-    Setup() {
+struct setup {
+    setup() {
         Py_Initialize();
     }
 
-    ~Setup() {
+    ~setup() {
         Py_Finalize();
     }
 };
 
-Setup setup;
+setup s;
