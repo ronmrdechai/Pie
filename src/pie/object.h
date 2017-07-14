@@ -4,12 +4,12 @@
 
 namespace pie {
 
-class python_object {
+class object {
 public:
-    python_object();
-    explicit python_object(PyObject* o);
+    object();
+    explicit object(PyObject* o);
     template <typename... Args>
-    explicit python_object(Args&&... args);
+    explicit object(Args&&... args);
 
 // Non-Python methods
 
@@ -24,4 +24,4 @@ private:
 
 } // namespace pie
 
-#include "python_object.inl"
+#include "object.inl"
