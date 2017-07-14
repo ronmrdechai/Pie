@@ -94,9 +94,9 @@ public:
 // Non-Python methods
 
     /// Access the underlying pointer
-    PyObject* get();
+    PyObject* get() const;
     /// Access the underlying pointer
-    PyObject* operator->();
+    PyObject* operator->() const;
 
 private:
     PyObject* m_obj;

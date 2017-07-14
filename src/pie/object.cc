@@ -31,11 +31,11 @@ object& object::operator=(object other) {
     return *this;
 }
 
-PyObject* object::get() {
+PyObject* object::get() const {
     return m_obj;
 }
 
-PyObject* object::operator->() {
+PyObject* object::operator->() const {
     return get();
 }
 
