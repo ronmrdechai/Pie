@@ -29,6 +29,7 @@ set(PIE_SOURCE_FILES
 set(PIE_TEST_FILES
     "${PIE_TEST_DIR}/test_parse.cc"
     "${PIE_TEST_DIR}/test_object.cc"
+    "${PIE_TEST_DIR}/test_error.cc"
     "${PIE_TEST_DIR}/test_setup.cc"
 )
 
