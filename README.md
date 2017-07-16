@@ -21,9 +21,10 @@ maps turn into dictionaries, etc.
 
 ## Usage ##
 
-See the [example](#Example) for more information on how to use **Pie**. Note
-that you must call `Py_Initialize` and `Py_Finalize` before working with CPython
-objects. Just link with `libpie` and you should be ready to go.
+See the [example](https://github.com/ronmrdechai/Pie#example) for more
+information on how to use **Pie**. Note that you must call `Py_Initialize` and
+`Py_Finalize` before working with CPython objects. Just link with `libpie` and
+you should be ready to go.
 
 ## The Parser ##
 
