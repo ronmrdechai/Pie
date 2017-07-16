@@ -90,10 +90,10 @@ template <>
 struct parse_object_format<double> { static constexpr char value = 'd'; };
 
 template <>
-struct parse_object_format<char*> { static constexpr char value = 'y'; };
+struct parse_object_format<char*> { static constexpr char value = 's'; };
 
 template <>
-struct parse_object_format<const char*> { static constexpr char value = 'y'; };
+struct parse_object_format<const char*> { static constexpr char value = 's'; };
 
 template <size_t I, typename Tuple>
 struct set_tuple_helper {
@@ -125,7 +125,9 @@ struct parse_object_helper<Tuple,
     static PyObject* help(Tuple&& t) {
         constexpr size_t n = std::tuple_size<std::decay_t<Tuple>>::value;
         PyObject* o = PyTuple_New(n);
-        set_tuple_helper<n - 1, Tuple>::help(o, t);
+        if constexpr (n > 0) {
+            set_tuple_helper<n - 1, Tuple>::help(o, t);
+        }
         return o;
     }
 };
