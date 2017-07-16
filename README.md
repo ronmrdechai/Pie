@@ -19,6 +19,12 @@ maps turn into dictionaries, etc.
 1. Parsing of C++ types into Python objects.
 1. Wrapping of Python exceptions into C++ exceptions.
 
+## Usage ##
+
+See the [example](Example) for more information on how to use **Pie**. Not that
+you must call `Py_Initialize` and `Py_Finalize` before working with CPython
+objects.
+
 ## The Parser ##
 
 **Pie's** C++ type parser is very simple, it handles the following cases:
@@ -68,6 +74,8 @@ See [tests](test/test_object.cc) for more detailed examples.
 #include <pie/pie.h>
 
 int main() {
+    Py_Initialize();
+
     pie::object os = PyImport_ImportModule("os");
     pie::object os_environ = pie::getattr(os, "environ");
 
@@ -84,6 +92,8 @@ int main() {
         std::cout << "Caught Python exception:" << std::endl;
         std::cout << e.what() << std::endl;
     }
+
+    Py_Finalize();
 }
 ```
 
