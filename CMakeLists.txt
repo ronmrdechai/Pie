@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.0)
 
-# set(CMAKE_C_COMPILER   "gcc-7")
-# set(CMAKE_CXX_COMPILER "g++-7")
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_C_COMPILER   "gcc-7")
+set(CMAKE_CXX_COMPILER "g++-7")
+set(CMAKE_CXX_STANDARD          17)
+set(CMAKE_CXX_STANDARD_REQUIRED YES)
+set(CMAKE_CXX_EXTENSIONS        NO)
 
-set(CMAKE_CXX_FLAGS "-Wall -Werror")
+set(CMAKE_BUILD_TYPE        Release)
+set(CMAKE_CXX_FLAGS         "-Wall -Werror")
 set(CMAKE_CXX_FLAGS_DEBUG   "-O0 -g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
