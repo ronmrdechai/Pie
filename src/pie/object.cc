@@ -195,17 +195,17 @@ object object::operator~() const {
     return PyNumber_Invert(m_obj);
 }
 
-object::iterator object::begin() {
+detail::iterator object::begin() {
     if (PySequence_Check(m_obj)) {
-        return iterator(*this, 0);
+        return detail::iterator(*this, 0);
     }
     throw std::runtime_error("object is not a sequence");
 }
 
-object::iterator object::end() {
+detail::iterator object::end() {
     if (PySequence_Check(m_obj)) {
         ssize_t size = PySequence_Length(m_obj);
-        return iterator(*this, size);
+        return detail::iterator(*this, size);
     }
     throw std::runtime_error("object is not a sequence");
 }
@@ -223,33 +223,6 @@ object::proxy::proxy(const object& o, const object& i) : o(o), i(i) { }
 object::proxy& object::proxy::operator=(const object& item) {
     PyObject_SetItem(o.m_obj, i.m_obj, item.m_obj);
     return *this;
-}
-
-object::iterator::iterator(object& o, ssize_t i) : o(o), i(i) { }
-object::iterator::iterator(const object::iterator& other) : 
-    o(other.o), i(other.i) { }
-
-object::iterator& object::iterator::operator++() {
-    ++i;
-    return *this;
-}
-
-object::iterator object::iterator::operator++(int) {
-    object::iterator temp(*this);
-    operator++();
-    return temp;
-}
-
-bool object::iterator::operator==(const object::iterator& other) {
-    return (o.get() == other.o.get()) && (i == other.i);
-}
-
-bool object::iterator::operator!=(const object::iterator& other) {
-    return !((*this) == other);
-}
-
-object object::iterator::operator*() {
-    return PySequence_GetItem(o.get(), i);
 }
 
 object getattr(const object& o, const object& attr) {
@@ -272,6 +245,14 @@ object abs(const object& o) {
     return PyNumber_Absolute(o.get());
 }
 
+detail::iterator begin(object&& o) {
+    return o.begin();
+}
+
+detail::iterator end(object&& o) {
+    return o.end();
+}
+
 std::ostream& operator<<(std::ostream& os, const object& o) {
     object str = o.str();
     object ascii = PyUnicode_AsASCIIString(str.get());
@@ -280,5 +261,36 @@ std::ostream& operator<<(std::ostream& os, const object& o) {
     os << std::string_view(data, size);
     return os;
 }
+
+namespace detail {
+
+iterator::iterator(object o, ssize_t i) : o(o), i(i) { }
+iterator::iterator(const iterator& other) : 
+    iterator(other.o, other.i) { }
+
+iterator& iterator::operator++() {
+    ++i;
+    return *this;
+}
+
+iterator iterator::operator++(int) {
+    iterator temp(*this);
+    operator++();
+    return temp;
+}
+
+bool iterator::operator==(const iterator& other) {
+    return (o.get() == other.o.get()) && (i == other.i);
+}
+
+bool iterator::operator!=(const iterator& other) {
+    return !((*this) == other);
+}
+
+object iterator::operator*() {
+    return PySequence_GetItem(o.get(), i);
+}
+
+} // namespace detail
 
 } // namespace pie

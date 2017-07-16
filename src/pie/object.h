@@ -4,6 +4,11 @@
 #include <ostream>
 
 namespace pie {
+namespace detail {
+
+struct iterator;
+
+} // namespace detail
 
 class object {
     struct proxy {
@@ -12,22 +17,6 @@ class object {
 
         const object& o;
         const object& i;
-    };
-
-    struct iterator : std::iterator<std::input_iterator_tag, object> {
-        iterator(object& o, ssize_t i);
-        iterator(const iterator& other);
-
-        iterator& operator++();
-        iterator operator++(int);
-
-        bool operator==(const iterator& other);
-        bool operator!=(const iterator& other);
-
-        object operator*();
-
-        object& o;
-        ssize_t i;
     };
 
 public:
@@ -129,8 +118,8 @@ public:
     // __invert__
     object operator~() const;
 
-    iterator begin();
-    iterator end();
+    detail::iterator begin();
+    detail::iterator end();
 
 // Non-Python methods
 
@@ -143,6 +132,9 @@ private:
     PyObject* m_obj;
 };
 
+detail::iterator begin(object&& o);
+detail::iterator end(object&& o);
+
 // __getattr__
 object getattr(const object& o, const object& attr);
 // __setattr__
@@ -154,10 +146,28 @@ bool hasattr(const object& o, const object& attr);
 std::ostream& operator<<(std::ostream& os, const object& o);
 
 object pow(const object& b, const object& e, const object& o = Py_None);
-
 object abs(const object& o);
 
-} // namespace pie
+namespace detail {
 
+struct iterator : std::iterator<std::input_iterator_tag, object> {
+    iterator(object o, ssize_t i);
+    iterator(const iterator& other);
+
+    iterator& operator++();
+    iterator operator++(int);
+
+    bool operator==(const iterator& other);
+    bool operator!=(const iterator& other);
+
+    object operator*();
+
+    object o;
+    ssize_t i;
+};
+
+} // namespace detail
+
+} // namespace pie
 
 #include "object.inl"
