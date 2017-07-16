@@ -5,7 +5,7 @@ set(CMAKE_CXX_COMPILER "g++-7")
 
 project(Pie)
 
-find_package(PythonLibs 3.6 REQUIRED)
+find_package(PythonLibs 3 REQUIRED)
 include(external_googletest.cmake)
 
 set(CMAKE_CXX_FLAGS "-Wall -Werror -g -O3 -std=c++1z")
@@ -41,9 +41,9 @@ include_directories(
 
 add_library(pie SHARED ${PIE_SOURCE_FILES})
 target_link_libraries(pie ${PYTHON_LIBRARY})
-add_executable(tests ${PIE_TEST_FILES}) 
 
+add_executable(tests ${PIE_TEST_FILES})
 target_link_libraries(tests pie ${GTEST_BOTH_LIBRARIES})
-
+set_target_properties(tests PROPERTIES EXCLUDE_FROM_ALL 1)
 add_custom_target(run-tests DEPENDS tests)
 add_custom_command(COMMAND ./tests TARGET run-tests)
