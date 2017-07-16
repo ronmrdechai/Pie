@@ -51,7 +51,7 @@ public:
     // __hash__
     ssize_t hash() const;
     // __bool__
-    operator bool() const;
+    explicit operator bool() const;
 
     // __call__
     template <typename... Args>
@@ -110,7 +110,6 @@ public:
     object operator-() const;
     // __pos__
     object operator+() const;
-    // __abs__
     // __invert__
     object operator~() const;
 
