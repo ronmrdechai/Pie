@@ -2,13 +2,17 @@ cmake_minimum_required(VERSION 3.0)
 
 set(CMAKE_C_COMPILER   "gcc-7")
 set(CMAKE_CXX_COMPILER "g++-7")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_BUILD_TYPE Release)
+
+set(CMAKE_CXX_FLAGS "-Wall -Werror")
+set(CMAKE_CXX_FLAGS_DEBUG   "-O0 -g")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 project(Pie)
 
 find_package(PythonLibs 3 REQUIRED)
 include(external_googletest.cmake)
-
-set(CMAKE_CXX_FLAGS "-Wall -Werror -g -O3 -std=c++1z")
 
 set(PIE_TEST_DIR "test")
 set(PIE_SOURCE_DIR "src")
@@ -41,6 +45,15 @@ include_directories(
 
 add_library(pie SHARED ${PIE_SOURCE_FILES})
 target_link_libraries(pie ${PYTHON_LIBRARY})
+
+install(
+    TARGETS pie
+    DESTINATION "lib"
+)
+install(
+    FILES ${PIE_HEADER_FILES}
+    DESTINATION "include"
+)
 
 add_executable(tests ${PIE_TEST_FILES})
 target_link_libraries(tests pie ${GTEST_BOTH_LIBRARIES})
