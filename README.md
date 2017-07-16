@@ -110,6 +110,6 @@ call Python from your C++ code, and embed it in your applications.
 > **Note:** Currently **Pie** only compliments CPython's C API, there are plans
 > to turn **Pie** into a complete replacement for the API.
 
-[ ] Provide a complete documentation for **Pie**
-[ ] Wrap Python builtin types with `pie::objects`.
-[ ] Wrap Python's import functionality.
+- [ ] Provide a complete documentation for **Pie**
+- [ ] Wrap Python builtin types with `pie::objects`.
+- [ ] Wrap Python's import functionality.
