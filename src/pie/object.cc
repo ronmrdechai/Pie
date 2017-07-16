@@ -97,7 +97,7 @@ object object::operator+ (const object& other) const {
 }
 
 object& object::operator+=(const object& other) {
-    object o = PyNumber_InPlaceAdd(m_obj, other.m_obj);
+    *this = PyNumber_InPlaceAdd(m_obj, other.m_obj);
     return *this;
 }
 
@@ -106,7 +106,7 @@ object object::operator- (const object& other) const {
 }
 
 object& object::operator-=(const object& other) {
-    object o = PyNumber_InPlaceSubtract(m_obj, other.m_obj);
+    *this = PyNumber_InPlaceSubtract(m_obj, other.m_obj);
     return *this;
 }
 
@@ -115,7 +115,7 @@ object object::operator* (const object& other) const {
 }
 
 object& object::operator*=(const object& other) {
-    object o = PyNumber_InPlaceMultiply(m_obj, other.m_obj);
+    *this = PyNumber_InPlaceMultiply(m_obj, other.m_obj);
     return *this;
 }
 
@@ -124,7 +124,7 @@ object object::operator/ (const object& other) const {
 }
 
 object& object::operator/=(const object& other) {
-    object o = PyNumber_InPlaceTrueDivide(m_obj, other.m_obj);
+    *this = PyNumber_InPlaceTrueDivide(m_obj, other.m_obj);
     return *this;
 }
 
@@ -133,7 +133,7 @@ object object::operator% (const object& other) const {
 }
 
 object& object::operator%=(const object& other) {
-    object o = PyNumber_InPlaceRemainder(m_obj, other.m_obj);
+    *this = PyNumber_InPlaceRemainder(m_obj, other.m_obj);
     return *this;
 }
 
@@ -142,7 +142,7 @@ object object::operator<< (const object& other) const {
 }
 
 object& object::operator<<=(const object& other) {
-    object o = PyNumber_InPlaceLshift(m_obj, other.m_obj);
+    *this = PyNumber_InPlaceLshift(m_obj, other.m_obj);
     return *this;
 }
 
@@ -151,7 +151,7 @@ object object::operator>> (const object& other) const {
 }
 
 object& object::operator>>=(const object& other) {
-    object o = PyNumber_InPlaceRshift(m_obj, other.m_obj);
+    *this = PyNumber_InPlaceRshift(m_obj, other.m_obj);
     return *this;
 }
 
@@ -160,7 +160,7 @@ object object::operator& (const object& other) const {
 }
 
 object& object::operator&=(const object& other) {
-    object o = PyNumber_InPlaceAnd(m_obj, other.m_obj);
+    *this = PyNumber_InPlaceAnd(m_obj, other.m_obj);
     return *this;
 }
 
@@ -169,7 +169,7 @@ object object::operator^ (const object& other) const {
 }
 
 object& object::operator^=(const object& other) {
-    object o = PyNumber_InPlaceXor(m_obj, other.m_obj);
+    *this = PyNumber_InPlaceXor(m_obj, other.m_obj);
     return *this;
 }
 
@@ -178,7 +178,7 @@ object object::operator| (const object& other) const {
 }
 
 object& object::operator|=(const object& other) {
-    object o = PyNumber_InPlaceOr(m_obj, other.m_obj);
+    *this = PyNumber_InPlaceOr(m_obj, other.m_obj);
     return *this;
 }
 
