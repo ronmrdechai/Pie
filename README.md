@@ -25,6 +25,9 @@ See the [example](https://github.com/ronmrdechai/Pie#example) for more
 information on how to use **Pie**. Just link with `libpie` and you should be
 ready to go.
 
+> _Note:_ **Pie** is not a replacement for the CPython API, it is intended to
+> compliment it and make it easier to use in C++.
+
 ### Setup ###
 
 CPython requires you call `Py_Initialize` before you start working with its
@@ -116,16 +119,17 @@ int main() {
 
 ## Why not Boost.Python, PyBind11 or SWIG? ##
 
-Boost.Python, PyBind11 and SWIG are wonderful packages, but they serve a
-different purpose. These packages wrap C++ classes and functions into Python
-classes and functions, allowing you call them from Python. **Pie** does exactly
-the opposite, it wraps Python objects into C++ objects, allowing you to easily
-call Python from your C++ code, and embed it in your applications.
+Boost.Python, PyBind11 and SWIG are wonderful packages, but they different from
+**Pie**. These packages wrap C++ classes and functions into Python classes and 
+functions, allowing you call them from Python. Some of them have support for
+calling Python code from C++, but this functionality has been added as an
+afterthought. 
+
+**Pie** has been built from the ground up to wrap Python objects into C++
+objects, allowing you to easily call Python from your C++ code, and embed it in
+your applications.
 
 ## To Do ##
-
-> **Note:** **Pie** is meant to compliment CPython's C API, it is not intended
-> as a replacement for it.
 
 - [ ] Provide a complete documentation for **Pie**
 - [ ] Wrap Python builtin types with `pie::objects`.
