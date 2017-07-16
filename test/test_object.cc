@@ -59,9 +59,6 @@ TEST(object, move_assignment) {
     EXPECT_EQ(refcount, move->ob_refcnt);
 }
 
-// repr
-// str
-
 TEST(object, comparison) {
     object one = 1;
     object two = 2;
@@ -83,7 +80,11 @@ TEST(object, hash) {
     EXPECT_EQ(o1.hash(), o2.hash());
 }
 
-// call
+TEST(object, call) {
+    object os_listdir = pie::getattr(PyImport_ImportModule("os"), "listdir");
+    EXPECT_TRUE(os_listdir());
+    EXPECT_TRUE(os_listdir("/"));
+}
 
 TEST(object, sequences) {
     object seq(1, 2, 3, 4, 5);
@@ -93,4 +94,78 @@ TEST(object, sequences) {
         seq[i] = i + 2;
         EXPECT_EQ(object(i + 2), seq[i]);
     }
+}
+
+TEST(object, numeric_operators) {
+    object zero = 0;
+    object one = 1;
+    object two = 2;
+    object three = 3;
+    object four = 4;
+    {
+        object new_one = one;
+        EXPECT_EQ(three, one + two);
+        EXPECT_EQ(three, new_one += two);
+    }
+    {
+        object new_three = three;
+        EXPECT_EQ(one, three - two);
+        EXPECT_EQ(one, new_three -= two);
+    }
+    {
+        object new_one = one;
+        EXPECT_EQ(two, one * two);
+        EXPECT_EQ(two, new_one *= two);
+    }
+    {
+        object new_four = four;
+        EXPECT_EQ(two, four / two);
+        EXPECT_EQ(two, new_four /= two);
+    }
+    {
+        object new_four = four;
+        EXPECT_EQ(zero, four % two);
+        EXPECT_EQ(zero, new_four %= two);
+    }
+    object negative_one = -1;
+
+    EXPECT_EQ(negative_one, -one);
+    EXPECT_EQ(one, +one);
+    EXPECT_EQ(four, pow(two, two));
+    EXPECT_EQ(one, abs(negative_one));
+}
+
+TEST(object, bitwise_operators) {
+    object zero = 0;
+    object one = 1;
+    object two = 2;
+    object three = 3;
+    object four = 4;
+
+    {
+        object new_one = one;
+        EXPECT_EQ(four, one << two);
+        EXPECT_EQ(four, new_one <<= two);
+    }
+    {
+        object new_two = two;
+        EXPECT_EQ(one, two >> one);
+        EXPECT_EQ(one, new_two >>= one);
+    }
+    {
+        object new_two = two;
+        EXPECT_EQ(zero, two & one);
+        EXPECT_EQ(zero, new_two &= one);
+    }
+    {
+        object new_three = three;
+        EXPECT_EQ(two, three ^ one);
+        EXPECT_EQ(two, new_three ^= one);
+    }
+    {
+        object new_two = two;
+        EXPECT_EQ(three, two | one);
+        EXPECT_EQ(three, new_two |= one);
+    }
+    EXPECT_EQ(-four, ~three);
 }
