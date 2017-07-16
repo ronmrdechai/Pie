@@ -195,6 +195,21 @@ object object::operator~() const {
     return PyNumber_Invert(m_obj);
 }
 
+object::iterator object::begin() {
+    if (PySequence_Check(m_obj)) {
+        return iterator(*this, 0);
+    }
+    throw std::runtime_error("object is not a sequence");
+}
+
+object::iterator object::end() {
+    if (PySequence_Check(m_obj)) {
+        ssize_t size = PySequence_Length(m_obj);
+        return iterator(*this, size);
+    }
+    throw std::runtime_error("object is not a sequence");
+}
+
 PyObject* object::get() const {
     return m_obj;
 }
@@ -208,6 +223,33 @@ object::proxy::proxy(const object& o, const object& i) : o(o), i(i) { }
 object::proxy& object::proxy::operator=(const object& item) {
     PyObject_SetItem(o.m_obj, i.m_obj, item.m_obj);
     return *this;
+}
+
+object::iterator::iterator(object& o, ssize_t i) : o(o), i(i) { }
+object::iterator::iterator(const object::iterator& other) : 
+    o(other.o), i(other.i) { }
+
+object::iterator& object::iterator::operator++() {
+    ++i;
+    return *this;
+}
+
+object::iterator object::iterator::operator++(int) {
+    object::iterator temp(*this);
+    operator++();
+    return temp;
+}
+
+bool object::iterator::operator==(const object::iterator& other) {
+    return (o.get() == other.o.get()) && (i == other.i);
+}
+
+bool object::iterator::operator!=(const object::iterator& other) {
+    return !((*this) == other);
+}
+
+object object::iterator::operator*() {
+    return PySequence_GetItem(o.get(), i);
 }
 
 object getattr(const object& o, const object& attr) {

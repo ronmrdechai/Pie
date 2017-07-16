@@ -91,8 +91,14 @@ TEST(object, sequences) {
     EXPECT_EQ(5, seq.length());
     for (size_t i = 0; i < 5; ++i) {
         EXPECT_EQ(object(i + 1), seq[i]);
-        seq[i] = i + 2;
-        EXPECT_EQ(object(i + 2), seq[i]);
+        seq[i] = i;
+        EXPECT_EQ(object(i), seq[i]);
+    }
+
+    size_t i = 0;
+    for (auto o: seq) {
+        EXPECT_EQ(object(i), o);
+        ++i;
     }
 }
 
