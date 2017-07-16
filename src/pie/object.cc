@@ -1,4 +1,5 @@
 #include "object.h"
+#include "error.h"
 
 #include <string_view>
 
@@ -13,9 +14,7 @@ object::~object() {
 }
 
 object::object(PyObject* o) : m_obj(o) {
-    if (m_obj == nullptr) {
-        throw std::runtime_error("object initialized with nullptr");
-    }
+    error::conditional_throw();
 }
 
 object::object(object& other) : object(static_cast<object const&>(other)) { }
@@ -25,7 +24,9 @@ object::object(object&& other) : m_obj(other.m_obj) {
 }
 
 object::object(const object& other) : m_obj(other.m_obj) {
-    Py_INCREF(m_obj);
+    if (m_obj) {
+        Py_INCREF(m_obj);
+    }
 }
 
 object::object(proxy other) : object(PyObject_GetItem(other.o.m_obj,

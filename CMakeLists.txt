@@ -18,10 +18,12 @@ set(PIE_HEADER_FILES
     "${PIE_SOURCE_DIR}/pie/parse.h"
     "${PIE_SOURCE_DIR}/pie/object.h"
     "${PIE_SOURCE_DIR}/pie/object.inl"
+    "${PIE_SOURCE_DIR}/pie/error.h"
 )
 
 set(PIE_SOURCE_FILES
     "${PIE_SOURCE_DIR}/pie/object.cc"
+    "${PIE_SOURCE_DIR}/pie/error.cc"
 )
 
 set(PIE_TEST_FILES
