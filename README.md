@@ -22,9 +22,20 @@ maps turn into dictionaries, etc.
 ## Usage ##
 
 See the [example](https://github.com/ronmrdechai/Pie#example) for more
-information on how to use **Pie**. Note that you must call `Py_Initialize` and
-`Py_Finalize` before working with CPython objects. Just link with `libpie` and
-you should be ready to go.
+information on how to use **Pie**. Just link with `libpie` and you should be
+ready to go.
+
+### Setup ###
+
+CPython requires you call `Py_Initialize` before you start working with its
+types, and `Py_Finalize` when you are done. Because **Pie** is only a thin
+wrapper around CPython, you are required to call these functions yourself
+as well.
+
+A common error is a segfault right after you call `Py_Finalize` at the end of a
+scope containing a `pie::object`. Note that the object's destructor is called
+after the scope exits, thus it is called after `Py_Finalize`, causing a
+segfault. Do not call `Py_Finalize` in a scope containing `pie::objects`.
 
 ## The Parser ##
 
@@ -72,29 +83,34 @@ Python and C++17.
 See [tests](test/test_object.cc) for more detailed examples.
 
 ```c++
-#include <pie/pie.h>
+#include <pie/pie.h>                   
 
-int main() {
-    Py_Initialize();
+#include <iostream>                    
 
-    pie::object os = PyImport_ImportModule("os");
-    pie::object os_environ = pie::getattr(os, "environ");
+int main() {                           
+    Py_Initialize();                   
 
-    std::cout << "The following directories are in the PATH:" << std::endl;
-    for (auto dir: os_environ["PATH"]) {
-        std::cout << dir std::endl;
-    }
+    {                                  
+        pie::object os = PyImport_ImportModule("os");                          
+        pie::object os_environ = pie::getattr(os, "environ");                  
 
-    pie::object zero = 0;
-    pie::object one = 1;
-    try {
-        one / zero;
-    } catch (pie::error& e) {
-        std::cout << "Caught Python exception:" << std::endl;
-        std::cout << e.what() << std::endl;
-    }
+        std::cout << "The following directories are in the PATH:" << std::endl;                                                                                
+        for (auto dir: getattr(os_environ["PATH"], "split")(":")) {            
+            std::cout << dir << std::endl;                                     
+        }                              
 
-    Py_Finalize();
+        pie::object zero = 0;          
+        pie::object one = 1;           
+        try {                          
+            one / zero;                
+        } catch (pie::error& e) {      
+            std::cout << "Caught Python exception:" << std::endl;              
+            std::cout << e.what() << std::endl;                                
+        }                              
+    }                                  
+
+    Py_Finalize();                     
+    return 0;                          
 }
 ```
 
@@ -108,9 +124,8 @@ call Python from your C++ code, and embed it in your applications.
 
 ## To Do ##
 
-> **Note:** Currently **Pie** only compliments CPython's C API, there are plans
-> to turn **Pie** into a complete replacement for the API.
+> **Note:** **Pie** is meant to compliment CPython's C API, it is not intended
+> as a replacement for it.
 
 - [ ] Provide a complete documentation for **Pie**
 - [ ] Wrap Python builtin types with `pie::objects`.
-- [ ] Wrap Python's import functionality.
