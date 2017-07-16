@@ -117,6 +117,22 @@ int main() {
 }
 ```
 
+This is equivalent to the following Python code:
+
+```python
+import os
+
+print("The following directories are in the PATH:")
+for dir in os.environ["PATH"].split(":"):
+    print(dir)
+
+try:
+    1 / 0
+except BaseException as e:
+    print("Caught Python exception:")
+    print(e.__class__.__name__ + ": " + str(e))
+```
+
 ## Why not Boost.Python, PyBind11 or SWIG? ##
 
 Boost.Python, PyBind11 and SWIG are wonderful packages, but they different from
