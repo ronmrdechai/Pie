@@ -53,25 +53,25 @@ TEST(parse, strings) {
     {
         const char* s = "foobar";
         PyObject* o = parse_object(s);
-        EXPECT_TRUE(PyBytes_Check(o));
-        EXPECT_STREQ("foobar", PyBytes_AsString(o));
+        EXPECT_TRUE(PyUnicode_Check(o));
+        EXPECT_STREQ("foobar", PyBytes_AsString(PyUnicode_AsASCIIString(o)));
     }
     {
         char s[7] = "foobar";
         PyObject* o = parse_object(s);
-        EXPECT_TRUE(PyBytes_Check(o));
-        EXPECT_STREQ("foobar", PyBytes_AsString(o));
+        EXPECT_TRUE(PyUnicode_Check(o));
+        EXPECT_STREQ("foobar", PyBytes_AsString(PyUnicode_AsASCIIString(o)));
     }
     {
         std::string s = "foobar";
         PyObject* o = parse_object(s);
-        EXPECT_TRUE(PyBytes_Check(o));
-        EXPECT_STREQ("foobar", PyBytes_AsString(o));
+        EXPECT_TRUE(PyUnicode_Check(o));
+        EXPECT_STREQ("foobar", PyBytes_AsString(PyUnicode_AsASCIIString(o)));
     }
     {
         PyObject* o = parse_object("foobar");
-        EXPECT_TRUE(PyBytes_Check(o));
-        EXPECT_STREQ("foobar", PyBytes_AsString(o));
+        EXPECT_TRUE(PyUnicode_Check(o));
+        EXPECT_STREQ("foobar", PyBytes_AsString(PyUnicode_AsASCIIString(o)));
     }
 }
 
@@ -139,7 +139,7 @@ TEST(parse, tuples) {
         EXPECT_EQ(2, PyNumber_AsSsize_t(PyTuple_GetItem(o, 1),
                                         nullptr));
         EXPECT_EQ(std::string("foobar"), 
-            PyBytes_AsString(PyTuple_GetItem(o, 2)));
+            PyBytes_AsString(PyUnicode_AsASCIIString(PyTuple_GetItem(o, 2))));
     }
 
     {
@@ -151,7 +151,7 @@ TEST(parse, tuples) {
         EXPECT_EQ(2, PyNumber_AsSsize_t(PyTuple_GetItem(o, 1),
                                         nullptr));
         EXPECT_EQ(std::string("foobar"), 
-            PyBytes_AsString(PyTuple_GetItem(o, 2)));
+            PyBytes_AsString(PyUnicode_AsASCIIString(PyTuple_GetItem(o, 2))));
     }
 }
 
