@@ -4,7 +4,7 @@
 #include <set>
 #include <map>
 
-#include <pie/parse.h>
+#include <pie/pie.h>
 #include <gtest/gtest.h>
 
 using pie::parse_object;

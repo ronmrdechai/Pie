@@ -1,6 +1,4 @@
-#include <pie/object.h>
-#include <pie/error.h>
-
+#include <pie/pie.h>
 #include <gtest/gtest.h>
 
 using pie::object;
