@@ -63,9 +63,7 @@ to Python 2 in the future.
 1. Python 3 and development headers.
 1. CMake version 3+
 
-The build process clones and builds 
-[googletest](https://github.com/google/googletest) which is used to run the
-tests. To build issue the following:
+To build issue the following:
 
 ```bash
 git clone git@github.com:ronmrdechai/Pie.git
@@ -74,6 +72,17 @@ cd build
 cmake ..
 make
 sudo make install
+```
+
+Building the tests clones and builds 
+[googletest](https://github.com/google/googletest) which is used to run the
+tests. To build the tests pass an additional `-DBUILD_TESTS=ON` to the `cmake`
+command:
+
+```bash
+cmake .. -DBUILD_TESTS=ON
+make
+make test
 ```
 
 ## Platforms ##
