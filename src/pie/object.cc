@@ -195,17 +195,17 @@ object object::operator~() const {
     return PyNumber_Invert(m_obj);
 }
 
-detail::iterator object::begin() {
+iterator object::begin() {
     if (PySequence_Check(m_obj)) {
-        return detail::iterator(*this, 0);
+        return iterator(*this, 0);
     }
     throw std::runtime_error("object is not a sequence");
 }
 
-detail::iterator object::end() {
+iterator object::end() {
     if (PySequence_Check(m_obj)) {
         ssize_t size = PySequence_Length(m_obj);
-        return detail::iterator(*this, size);
+        return iterator(*this, size);
     }
     throw std::runtime_error("object is not a sequence");
 }
@@ -245,11 +245,11 @@ object abs(const object& o) {
     return PyNumber_Absolute(o.get());
 }
 
-detail::iterator begin(object&& o) {
+iterator begin(object&& o) {
     return o.begin();
 }
 
-detail::iterator end(object&& o) {
+iterator end(object&& o) {
     return o.end();
 }
 
@@ -261,36 +261,5 @@ std::ostream& operator<<(std::ostream& os, const object& o) {
     os << std::string_view(data, size);
     return os;
 }
-
-namespace detail {
-
-iterator::iterator(object o, ssize_t i) : o(o), i(i) { }
-iterator::iterator(const iterator& other) : 
-    iterator(other.o, other.i) { }
-
-iterator& iterator::operator++() {
-    ++i;
-    return *this;
-}
-
-iterator iterator::operator++(int) {
-    iterator temp(*this);
-    operator++();
-    return temp;
-}
-
-bool iterator::operator==(const iterator& other) {
-    return (o.get() == other.o.get()) && (i == other.i);
-}
-
-bool iterator::operator!=(const iterator& other) {
-    return !((*this) == other);
-}
-
-object iterator::operator*() {
-    return PySequence_GetItem(o.get(), i);
-}
-
-} // namespace detail
 
 } // namespace pie
