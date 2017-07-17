@@ -14,7 +14,6 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 project(Pie)
 
 find_package(PythonLibs 3 REQUIRED)
-include(external_googletest.cmake)
 
 set(PIE_TEST_DIR "test")
 set(PIE_SOURCE_DIR "src")
@@ -25,24 +24,18 @@ set(PIE_HEADER_FILES
     "${PIE_SOURCE_DIR}/pie/object.h"
     "${PIE_SOURCE_DIR}/pie/object.inl"
     "${PIE_SOURCE_DIR}/pie/error.h"
+    "${PIE_SOURCE_DIR}/pie/iterator.h"
 )
 
 set(PIE_SOURCE_FILES
     "${PIE_SOURCE_DIR}/pie/object.cc"
     "${PIE_SOURCE_DIR}/pie/error.cc"
-)
-
-set(PIE_TEST_FILES
-    "${PIE_TEST_DIR}/test_parse.cc"
-    "${PIE_TEST_DIR}/test_object.cc"
-    "${PIE_TEST_DIR}/test_error.cc"
-    "${PIE_TEST_DIR}/test_setup.cc"
+    "${PIE_SOURCE_DIR}/pie/iterator.cc"
 )
 
 include_directories(
     ${PIE_SOURCE_DIR}
     ${PYTHON_INCLUDE_DIRS}
-    ${GTEST_INCLUDE_DIRS}
 )
 
 add_library(pie SHARED ${PIE_SOURCE_FILES})
@@ -57,8 +50,21 @@ install(
     DESTINATION "include"
 )
 
-add_executable(tests ${PIE_TEST_FILES})
-target_link_libraries(tests pie ${GTEST_BOTH_LIBRARIES})
-set_target_properties(tests PROPERTIES EXCLUDE_FROM_ALL 1)
-add_custom_target(run-tests DEPENDS tests)
-add_custom_command(COMMAND ./tests TARGET run-tests)
+if(${BUILD_TESTS})
+    set(PIE_TEST_FILES
+        "${PIE_TEST_DIR}/test_parse.cc"
+        "${PIE_TEST_DIR}/test_object.cc"
+        "${PIE_TEST_DIR}/test_error.cc"
+        "${PIE_TEST_DIR}/test_setup.cc"
+    )
+
+    include(external_googletest.cmake)
+
+    include_directories(${GTEST_INCLUDE_DIRS})
+
+    add_executable(tests ${PIE_TEST_FILES})
+    target_link_libraries(tests pie ${GTEST_BOTH_LIBRARIES})
+
+    enable_testing()
+    add_test(NAME tests COMMAND tests)
+endif()
