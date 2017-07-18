@@ -28,18 +28,6 @@ ready to go.
 > _Note:_ **Pie** is not a replacement for the CPython API, it is intended to
 > compliment it and make it easier to use in C++.
 
-### Setup ###
-
-CPython requires you call `Py_Initialize` before you start working with its
-types, and `Py_Finalize` when you are done. Because **Pie** is only a thin
-wrapper around CPython, you are required to call these functions yourself
-as well.
-
-A common error is a segfault right after you call `Py_Finalize` at the end of a
-scope containing a `pie::object`. Note that the object's destructor is called
-after the scope exits, thus it is called after `Py_Finalize`, causing a
-segfault. Do not call `Py_Finalize` in a scope containing `pie::objects`.
-
 ## The Parser ##
 
 **Pie's** C++ type parser is very simple, it handles the following cases:
@@ -100,29 +88,23 @@ See [tests](test/test_object.cc) for more detailed examples.
 #include <iostream>                    
 
 int main() {                           
-    Py_Initialize();                   
+    pie::object os = PyImport_ImportModule("os");
+    pie::object os_environ = pie::getattr(os, "environ");
 
-    {                                  
-        pie::object os = PyImport_ImportModule("os");                          
-        pie::object os_environ = pie::getattr(os, "environ");                  
+    std::cout << "The following directories are in the PATH:" << std::endl;
+    for (auto dir: getattr(os_environ["PATH"], "split")(":")) {
+        std::cout << dir << std::endl;
+    }
 
-        std::cout << "The following directories are in the PATH:" << std::endl;                                                                                
-        for (auto dir: getattr(os_environ["PATH"], "split")(":")) {            
-            std::cout << dir << std::endl;                                     
-        }                              
-
-        pie::object zero = 0;          
-        pie::object one = 1;           
-        try {                          
-            one / zero;                
-        } catch (pie::error& e) {      
-            std::cout << "Caught Python exception:" << std::endl;              
-            std::cout << e.what() << std::endl;                                
-        }                              
-    }                                  
-
-    Py_Finalize();                     
-    return 0;                          
+    pie::object zero = 0;
+    pie::object one = 1;
+    try {
+        one / zero;
+    } catch (pie::error& e) {
+        std::cout << "Caught Python exception:" << std::endl;
+        std::cout << e.what() << std::endl;
+    }
+    return 0;
 }
 ```
 
