@@ -31,6 +31,7 @@ set(PIE_SOURCE_FILES
     "${PIE_SOURCE_DIR}/pie/object.cc"
     "${PIE_SOURCE_DIR}/pie/error.cc"
     "${PIE_SOURCE_DIR}/pie/iterator.cc"
+    "${PIE_SOURCE_DIR}/pie/interpreter.cc"
 )
 
 include_directories(
@@ -50,12 +51,13 @@ install(
     DESTINATION "include"
 )
 
+option(BUILD_TESTS "Build the test files as well" OFF)
+
 if(${BUILD_TESTS})
     set(PIE_TEST_FILES
         "${PIE_TEST_DIR}/test_parse.cc"
         "${PIE_TEST_DIR}/test_object.cc"
         "${PIE_TEST_DIR}/test_error.cc"
-        "${PIE_TEST_DIR}/test_setup.cc"
     )
 
     include(external_googletest.cmake)
