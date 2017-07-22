@@ -1,13 +1,20 @@
 #include <Python.h>
 
 struct Interpreter {
-    Interpreter() {
-        Py_Initialize();
+    Interpreter() : should_finalize(false) {
+        if (!Py_IsInitialized()) {
+            Py_Initialize();
+            should_finalize = true;
+        }
     }
 
     ~Interpreter() {
-        Py_Finalize();
+        if (should_finalize) {
+            Py_Finalize();
+        }
     }
+
+    bool should_finalize;
 };
 
 Interpreter interpreter;
